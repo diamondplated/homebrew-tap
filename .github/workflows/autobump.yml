@@ -1,0 +1,101 @@
+name: Auto-bump casks
+
+# Casks pin a version and a sha256. Nothing updates them when an app cuts a
+# new release, so without this every existing user stays on the old version
+# forever — `brew upgrade` only ever compares against what the cask declares.
+#
+# Polls rather than being pushed to from the app repos: a repository_dispatch
+# would need a cross-repo token stored as a secret, and polling needs nothing
+# beyond this repo's own GITHUB_TOKEN.
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: autobump
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Bump any cask whose upstream has a newer release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          changed=0
+
+          for cask in Casks/*.rb; do
+            name=$(basename "$cask" .rb)
+
+            # Derive the repo and the asset-name template straight from the url
+            # stanza, so adding a cask needs no change here.
+            url_line=$(grep -m1 'releases/download' "$cask")
+            repo=$(printf '%s' "$url_line" | sed -n 's#.*github\.com/\([^/]*/[^/]*\)/releases/download.*#\1#p')
+            asset_tpl=$(printf '%s' "$url_line" | sed -n 's#.*/releases/download/[^/]*/\([^"]*\)".*#\1#p')
+
+            if [ -z "$repo" ] || [ -z "$asset_tpl" ]; then
+              echo "::warning::$name — could not parse repo/asset from its url stanza, skipping"
+              continue
+            fi
+
+            current=$(sed -n 's/^  version "\(.*\)"$/\1/p' "$cask" | head -1)
+            latest_tag=$(gh api "repos/$repo/releases/latest" --jq .tag_name 2>/dev/null || echo "")
+
+            if [ -z "$latest_tag" ]; then
+              echo "::warning::$name — no published release on $repo, skipping"
+              continue
+            fi
+
+            latest="${latest_tag#v}"
+            if [ "$latest" = "$current" ]; then
+              echo "$name: $current is current"
+              continue
+            fi
+
+            asset="${asset_tpl//\#\{version\}/$latest}"
+            dl="https://github.com/$repo/releases/download/$latest_tag/$asset"
+            echo "$name: $current -> $latest ($asset)"
+
+            if ! curl -fsSL --retry 3 -o /tmp/asset.zip "$dl"; then
+              echo "::warning::$name — $latest_tag has no asset named $asset, skipping"
+              continue
+            fi
+
+            sum=$(sha256sum /tmp/asset.zip | cut -d' ' -f1)
+            # A truncated download would still hash, so require a plausible size
+            # before rewriting a cask that everyone installs from.
+            size=$(stat -c%s /tmp/asset.zip)
+            if [ "$size" -lt 100000 ]; then
+              echo "::warning::$name — asset is only ${size}B, refusing to bump on a likely bad download"
+              continue
+            fi
+
+            sed -i "s|^  version \".*\"$|  version \"$latest\"|" "$cask"
+            sed -i "s|^  sha256 \".*\"$|  sha256 \"$sum\"|" "$cask"
+            ruby -c "$cask" >/dev/null
+            changed=1
+          done
+
+          echo "changed=$changed" >> "$GITHUB_ENV"
+
+      - name: Commit
+        if: env.changed == '1'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks
+          git diff --cached --quiet && exit 0
+          git commit -m "Auto-bump casks to their latest upstream releases"
+          git push

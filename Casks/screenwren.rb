@@ -4,6 +4,11 @@ cask "screenwren" do
 
   url "https://github.com/diamondplated/screenwren/releases/download/v#{version}/ScreenWren-#{version}.zip",
       verified: "github.com/diamondplated/screenwren/"
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   name "ScreenWren"
   desc "Fast, private, native screen capture for macOS"
   homepage "https://github.com/diamondplated/screenwren"

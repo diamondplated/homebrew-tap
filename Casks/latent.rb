@@ -4,6 +4,11 @@ cask "latent" do
 
   url "https://github.com/diamondplated/latent/releases/download/v#{version}/Latent-#{version}.zip",
       verified: "github.com/diamondplated/latent/"
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   name "Latent"
   desc "Folder-first photo viewer with a local AI enhancement pipeline"
   homepage "https://github.com/diamondplated/latent"
