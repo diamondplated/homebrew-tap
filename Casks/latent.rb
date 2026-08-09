@@ -1,6 +1,6 @@
 cask "latent" do
-  version "0.1.0"
-  sha256 "836fa2ebf9f9d8b32a110b4b3679bb4d1ac1f7c93ca43771a62b2dbda33be54d"
+  version "0.1.1"
+  sha256 "6065f648445cdaf90acad5a5a6a178db1a2e986b2ad4e50cb0894d50fcfcd656"
 
   url "https://github.com/diamondplated/latent/releases/download/v#{version}/Latent-#{version}.zip",
       verified: "github.com/diamondplated/latent/"
