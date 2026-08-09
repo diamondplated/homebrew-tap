@@ -49,6 +49,19 @@ git clone https://github.com/diamondplated/screenwren && cd screenwren && ./buil
 Even with the Gatekeeper step, the cask gets you versioned installs, `brew upgrade`, and a clean
 `brew uninstall --zap` that removes preferences and saved state too.
 
+## Upgrades
+
+```sh
+brew upgrade --cask
+```
+
+A daily workflow in this repo checks each app's latest GitHub release and bumps the cask's version
+and `sha256` automatically, so a new upstream release reaches you without anyone editing a cask by
+hand. It refuses to rewrite a cask if the download 404s or comes back implausibly small — a wrong
+`sha256` here breaks installs for everybody.
+
+`brew livecheck --cask diamondplated/tap/screenwren` reports the upstream version on demand.
+
 ## Not here: Sift
 
 [Sift](https://github.com/diamondplated/sift) — the local data-file explorer — isn't in this tap.
