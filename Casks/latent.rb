@@ -23,12 +23,18 @@ cask "latent" do
 
   caveats <<~EOS
     Latent is ad-hoc signed, not notarized — this project has no Apple
-    Developer ID. If you installed without --no-quarantine, macOS will refuse
-    the first launch. Either reinstall with:
+    Developer ID — and Homebrew 6 always applies macOS's quarantine attribute
+    with no opt-out. So macOS WILL block the first launch.
 
-      brew install --cask --no-quarantine diamondplated/tap/latent
+    Approve it once, either way:
 
-    or approve it once under System Settings → Privacy & Security.
+      • Open it, then go to System Settings → Privacy & Security and click
+        "Open Anyway", or
+      • Remove the attribute yourself, if you trust this build:
+          xattr -dr com.apple.quarantine /Applications/Latent.app
+
+    That second one disables a macOS security check for this app. It is your
+    call to make deliberately, which is why it is not done for you here.
 
     The AI enhancement stages need model weights that are NOT bundled. Without
     them Latent still works: Sharpen runs classically, Upscale falls back to

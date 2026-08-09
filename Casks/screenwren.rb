@@ -24,14 +24,21 @@ cask "screenwren" do
 
   caveats <<~EOS
     ScreenWren is ad-hoc signed, not notarized — this project has no Apple
-    Developer ID. If you installed without --no-quarantine, macOS will refuse
-    the first launch. Either reinstall with:
+    Developer ID — and Homebrew 6 always applies macOS's quarantine attribute
+    with no opt-out. So macOS WILL block the first launch.
 
-      brew install --cask --no-quarantine diamondplated/tap/screenwren
+    Approve it once, either way:
 
-    or approve it once under System Settings → Privacy & Security.
+      • Open it, then go to System Settings → Privacy & Security and click
+        "Open Anyway", or
+      • Remove the attribute yourself, if you trust this build:
+          xattr -dr com.apple.quarantine /Applications/ScreenWren.app
 
-    ScreenWren needs Screen Recording permission to capture pixels. It will
-    walk you through granting it on first launch.
+    That second one disables a macOS security check for this app. It is your
+    call to make deliberately, which is why it is not done for you here.
+    Building from source avoids the question entirely.
+
+    ScreenWren also needs Screen Recording permission to capture pixels; it
+    walks you through granting that on first launch.
   EOS
 end
