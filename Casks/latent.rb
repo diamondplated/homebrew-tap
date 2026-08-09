@@ -8,7 +8,7 @@ cask "latent" do
   desc "Folder-first photo viewer with a local AI enhancement pipeline"
   homepage "https://github.com/diamondplated/latent"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
   depends_on arch: :arm64
 
   app "Latent.app"

@@ -10,7 +10,7 @@ cask "screenwren" do
 
   # PaperKit editor APIs are macOS 26+ only, deliberately — there is no
   # compatibility editor for older releases.
-  depends_on macos: ">= :tahoe"
+  depends_on macos: :tahoe
 
   app "ScreenWren.app"
 
