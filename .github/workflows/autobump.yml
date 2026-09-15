@@ -22,7 +22,10 @@ concurrency:
 
 jobs:
   bump:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, toast]
+    # Self-hosted on toast (192.168.0.141). GitHub-hosted minutes ran out on
+    # ~9/10 and every ubuntu-latest job sat unstarted; see homelab
+    # docs/runbook-toast.md for what the box provides.
     timeout-minutes: 20
 
     steps:
