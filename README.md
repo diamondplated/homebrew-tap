@@ -12,10 +12,12 @@ brew tap diamondplated/tap
 |---|---|---|
 | [`screenwren`](https://github.com/diamondplated/screenwren) | Fast, private, native screen capture — `⌃P`, click, it's on your clipboard | macOS 26+ |
 | [`latent`](https://github.com/diamondplated/latent) | Folder-first photo viewer with a local AI enhancement pipeline | macOS 14+, Apple silicon |
+| [`sift`](https://github.com/diamondplated/sift) | Drop a data file in, explore it instantly — DuckDB reads it in place | macOS 14+, Apple silicon |
 
 ```sh
 brew install --cask diamondplated/tap/screenwren
 brew install --cask diamondplated/tap/latent
+brew install --cask diamondplated/tap/sift
 ```
 
 ## Read this before you install: macOS will block the first launch
