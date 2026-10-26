@@ -10,15 +10,24 @@ brew tap diamondplated/tap
 
 | Cask | What it is | Requires |
 |---|---|---|
-| [`screenwren`](https://github.com/diamondplated/screenwren) | Fast, private, native screen capture — `⌃P`, click, it's on your clipboard | macOS 26+ |
+| [`mac-tools`](https://github.com/diamondplated/mac-tools-releases) | One app that installs, updates and configures DockPeek, ScreenWren, ScrollSplit and LinkRoutes | macOS 14+ (ScreenWren 26+) |
+| `screenwren` | **Deprecated.** Last standalone build (0.5.0); ScreenWren now ships inside Mac Tools | macOS 26+ |
 | [`latent`](https://github.com/diamondplated/latent) | Folder-first photo viewer with a local AI enhancement pipeline | macOS 14+, Apple silicon |
 | [`sift`](https://github.com/diamondplated/sift) | Drop a data file in, explore it instantly — DuckDB reads it in place | macOS 14+, Apple silicon |
 
 ```sh
-brew install --cask diamondplated/tap/screenwren
+brew install --cask diamondplated/tap/mac-tools
 brew install --cask diamondplated/tap/latent
 brew install --cask diamondplated/tap/sift
 ```
+
+Already on the old `screenwren` cask? Switch over; Mac Tools installs the current ScreenWren:
+
+```sh
+brew uninstall --cask screenwren && brew install --cask diamondplated/tap/mac-tools
+```
+
+Mac Tools updates itself through Sparkle, so `brew upgrade` leaves it alone once installed.
 
 ## Read this before you install: macOS will block the first launch
 
@@ -33,18 +42,20 @@ by Gatekeeper. Approve it once, whichever way you prefer:
   remembers the decision.
 - **Or strip the attribute yourself**, if you trust the build:
   ```sh
-  xattr -dr com.apple.quarantine /Applications/ScreenWren.app
+  xattr -dr com.apple.quarantine "/Applications/Mac Tools.app"
   ```
 
 The second option disables a macOS security check for that app. That's a real decision, and it's
 yours — which is why these casks don't do it silently in a `postflight` block.
 
-If you'd rather not make that decision at all, build from source. Both repos build in one command
+If you'd rather not make that decision at all, build from source. Latent builds in one command
 with no dependencies beyond Xcode:
 
 ```sh
-git clone https://github.com/diamondplated/screenwren && cd screenwren && ./build-app.sh
+git clone https://github.com/diamondplated/latent && cd latent && ./build-app.sh
 ```
+
+(Mac Tools' source is private, so it installs from its release builds only.)
 
 ## What the tap is still good for
 
@@ -62,7 +73,7 @@ and `sha256` automatically, so a new upstream release reaches you without anyone
 hand. It refuses to rewrite a cask if the download 404s or comes back implausibly small — a wrong
 `sha256` here breaks installs for everybody.
 
-`brew livecheck --cask diamondplated/tap/screenwren` reports the upstream version on demand.
+`brew livecheck --cask diamondplated/tap/mac-tools` reports the upstream version on demand.
 
 ## Not here: Sift
 
@@ -78,6 +89,6 @@ git clone https://github.com/diamondplated/sift && cd sift && ./build-app.sh /Ap
 ## Uninstalling
 
 ```sh
-brew uninstall --cask screenwren
-brew uninstall --zap --cask screenwren    # also removes preferences and saved state
+brew uninstall --cask mac-tools
+brew uninstall --zap --cask mac-tools    # also removes preferences and saved state
 ```

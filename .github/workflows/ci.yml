@@ -1,0 +1,55 @@
+name: CI
+
+# A cask with a bad sha256 or a broken url breaks installs for everybody, so
+# every PR proves each changed cask parses and its declared download matches.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  casks:
+    runs-on: [self-hosted, toast]
+    # Same box as autobump.yml; GitHub-hosted runners are not used here.
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Every cask parses
+        run: |
+          set -euo pipefail
+          for cask in Casks/*.rb; do ruby -c "$cask" >/dev/null; echo "ok: $cask"; done
+
+      - name: Changed casks download and match their sha256
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          if git cat-file -e "$BASE" 2>/dev/null; then
+            changed=$(git diff --name-only "$BASE" HEAD -- 'Casks/*.rb')
+          else
+            changed=$(ls Casks/*.rb)
+          fi
+          for cask in $changed; do
+            [ -f "$cask" ] || continue
+            version=$(sed -n 's/^  version "\(.*\)"$/\1/p' "$cask" | head -1)
+            want=$(sed -n 's/^  sha256 "\(.*\)"$/\1/p' "$cask" | head -1)
+            url=$(sed -n 's/^  url "\([^"]*\)".*/\1/p' "$cask" | head -1)
+            url="${url//\#\{version\}/$version}"
+            tmp=$(mktemp)
+            curl -fsSL --retry 3 -o "$tmp" "$url"
+            got=$(sha256sum "$tmp" | cut -d' ' -f1)
+            rm -f "$tmp"
+            if [ "$got" != "$want" ]; then
+              echo "::error file=$cask::sha256 mismatch for $url: cask says $want, download is $got"
+              exit 1
+            fi
+            echo "ok: $cask $version $url"
+          done
