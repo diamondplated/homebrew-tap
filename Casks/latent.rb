@@ -11,7 +11,7 @@ cask "latent" do
 
   name "Latent"
   desc "Folder-first photo viewer with a local AI enhancement pipeline"
-  homepage "https://github.com/diamondplated/latent"
+  homepage "https://github.com/diamondplated/mac-apps/tree/main/Latent"
 
   depends_on macos: :sonoma
   depends_on arch: :arm64
@@ -43,8 +43,8 @@ cask "latent" do
 
     The AI enhancement stages need model weights that are NOT bundled. Without
     them Latent still works: Sharpen runs classically, Upscale falls back to
-    Lanczos, and the rest pass through. To enable them, clone the repo and run
-    scripts/setup_models.sh (~1.2 GB, one time).
+    Lanczos, and the rest pass through. To enable them, clone diamondplated/mac-apps and run
+    Latent/scripts/setup_models.sh (~1.2 GB, one time).
 
     Read THIRD_PARTY_MODELS.md before shipping anything commercial built on the
     face-restore stage — GFPGAN's license has non-commercial carve-outs.
