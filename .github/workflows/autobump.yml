@@ -45,7 +45,11 @@ jobs:
             # stanza, so adding a cask needs no change here.
             url_line=$(grep -m1 'releases/download' "$cask")
             repo=$(printf '%s' "$url_line" | sed -n 's#.*github\.com/\([^/]*/[^/]*\)/releases/download.*#\1#p')
+            tag_tpl=$(printf '%s' "$url_line" | sed -n 's#.*/releases/download/\([^/]*\)/.*#\1#p')
             asset_tpl=$(printf '%s' "$url_line" | sed -n 's#.*/releases/download/[^/]*/\([^"]*\)".*#\1#p')
+            # The tag's text before the version: "v" for a repo that ships one
+            # app, "latent-v" or "sift-v" for an app inside diamondplated/mac-apps.
+            tag_prefix="${tag_tpl%%\#\{version\}*}"
 
             if [ -z "$repo" ] || [ -z "$asset_tpl" ]; then
               echo "::warning::$name — could not parse repo/asset from its url stanza, skipping"
@@ -53,14 +57,22 @@ jobs:
             fi
 
             current=$(sed -n 's/^  version "\(.*\)"$/\1/p' "$cask" | head -1)
-            latest_tag=$(gh api "repos/$repo/releases/latest" --jq .tag_name 2>/dev/null || echo "")
+            if [ "$tag_prefix" = "v" ]; then
+              latest_tag=$(gh api "repos/$repo/releases/latest" --jq .tag_name 2>/dev/null || echo "")
+            else
+              # A repo holding several apps has one "latest" release for all of
+              # them, so take the newest published release with this app's prefix.
+              latest_tag=$(gh api --paginate "repos/$repo/releases?per_page=100" \
+                --jq '.[] | select((.draft or .prerelease) | not) | .tag_name' 2>/dev/null \
+                | awk -v p="$tag_prefix" 'index($0, p) == 1 { print; exit }' || true)
+            fi
 
             if [ -z "$latest_tag" ]; then
               echo "::warning::$name — no published release on $repo, skipping"
               continue
             fi
 
-            latest="${latest_tag#v}"
+            latest="${latest_tag#"$tag_prefix"}"
             if [ "$latest" = "$current" ]; then
               echo "$name: $current is current"
               continue

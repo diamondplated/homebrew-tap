@@ -11,7 +11,7 @@ cask "sift" do
 
   name "Sift"
   desc "Drop a data file in, explore it instantly — DuckDB reads CSV, Parquet, Delta, JSON and XLSX in place"
-  homepage "https://github.com/diamondplated/sift"
+  homepage "https://github.com/diamondplated/mac-apps/tree/main/Sift"
 
   depends_on macos: :sonoma
   depends_on arch: :arm64

@@ -12,8 +12,8 @@ brew tap diamondplated/tap
 |---|---|---|
 | [`mac-tools`](https://github.com/diamondplated/mac-tools-releases) | One app that installs, updates and configures DockPeek, ScreenWren, ScrollSplit and LinkRoutes | macOS 14+ (ScreenWren 26+) |
 | `screenwren` | **Deprecated.** Last standalone build (0.5.0); ScreenWren now ships inside Mac Tools | macOS 26+ |
-| [`latent`](https://github.com/diamondplated/latent) | Folder-first photo viewer with a local AI enhancement pipeline | macOS 14+, Apple silicon |
-| [`sift`](https://github.com/diamondplated/sift) | Drop a data file in, explore it instantly — DuckDB reads it in place | macOS 14+, Apple silicon |
+| [`latent`](https://github.com/diamondplated/mac-apps/tree/main/Latent) | Folder-first photo viewer with a local AI enhancement pipeline | macOS 14+, Apple silicon |
+| [`sift`](https://github.com/diamondplated/mac-apps/tree/main/Sift) | Drop a data file in, explore it instantly — DuckDB reads it in place | macOS 14+, Apple silicon |
 
 ```sh
 brew install --cask diamondplated/tap/mac-tools
@@ -77,7 +77,7 @@ hand. It refuses to rewrite a cask if the download 404s or comes back implausibl
 
 ## Not here: Sift
 
-[Sift](https://github.com/diamondplated/sift) — the local data-file explorer — isn't in this tap.
+[Sift](https://github.com/diamondplated/mac-apps/tree/main/Sift) — the local data-file explorer — isn't in this tap.
 Its `.app` is a ~1 MB launcher that references a Python engine and its virtualenv rather than
 bundling them, which is the right call for development and makes it non-relocatable. A cask can't
 build from source and a formula can't install a GUI app cleanly, so Sift installs from source:
