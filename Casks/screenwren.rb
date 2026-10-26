@@ -13,6 +13,10 @@ cask "screenwren" do
   desc "Fast, private, native screen capture for macOS"
   homepage "https://github.com/diamondplated/screenwren"
 
+  # Development moved into Mac Tools on 2026-10-10. This 0.5.0 build is the
+  # last standalone release and has a known screen-capture hole fixed in 0.5.1.
+  deprecate! date: "2026-10-26", because: "has moved into Mac Tools: brew install --cask diamondplated/tap/mac-tools"
+
   # PaperKit editor APIs are macOS 26+ only, deliberately — there is no
   # compatibility editor for older releases.
   depends_on macos: :tahoe
