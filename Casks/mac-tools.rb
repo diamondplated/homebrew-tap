@@ -1,6 +1,6 @@
 cask "mac-tools" do
-  version "1.2.0"
-  sha256 "de6567cb4a7391c9516521ce78f6068cbc0af64fcc25977147bae4fce5fd39d8"
+  version "1.2.1"
+  sha256 "daf4b926daef5209b349f5f1461f86c7c936aab9585b2cb578bff455e1d6bfb1"
 
   url "https://github.com/diamondplated/mac-tools-releases/releases/download/v#{version}/Mac-Tools-#{version}.zip",
       verified: "github.com/diamondplated/mac-tools-releases/"
