@@ -48,14 +48,13 @@ by Gatekeeper. Approve it once, whichever way you prefer:
 The second option disables a macOS security check for that app. That's a real decision, and it's
 yours — which is why these casks don't do it silently in a `postflight` block.
 
-If you'd rather not make that decision at all, build from source. Latent builds in one command
-with no dependencies beyond Xcode:
+If you'd rather not make that decision at all, build from source. All of these apps live in
+[diamondplated/mac-apps](https://github.com/diamondplated/mac-apps); the full suite needs macOS 26+
+and Swift 6.2+:
 
 ```sh
-git clone https://github.com/diamondplated/latent && cd latent && ./build-app.sh
+git clone https://github.com/diamondplated/mac-apps && cd mac-apps && ./build-app.sh && ./install-app.sh --no-build
 ```
-
-(Mac Tools' source is private, so it installs from its release builds only.)
 
 ## What the tap is still good for
 
@@ -74,17 +73,6 @@ hand. It refuses to rewrite a cask if the download 404s or comes back implausibl
 `sha256` here breaks installs for everybody.
 
 `brew livecheck --cask diamondplated/tap/mac-tools` reports the upstream version on demand.
-
-## Not here: Sift
-
-[Sift](https://github.com/diamondplated/mac-apps/tree/main/Sift) — the local data-file explorer — isn't in this tap.
-Its `.app` is a ~1 MB launcher that references a Python engine and its virtualenv rather than
-bundling them, which is the right call for development and makes it non-relocatable. A cask can't
-build from source and a formula can't install a GUI app cleanly, so Sift installs from source:
-
-```sh
-git clone https://github.com/diamondplated/sift && cd sift && ./build-app.sh /Applications
-```
 
 ## Uninstalling
 
