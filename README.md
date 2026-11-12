@@ -11,7 +11,6 @@ brew tap diamondplated/tap
 | Cask | What it is | Requires |
 |---|---|---|
 | [`mac-tools`](https://github.com/diamondplated/mac-tools-releases) | One app that installs, updates and configures DockPeek, ScreenWren, ScrollSplit and LinkRoutes | macOS 14+ (ScreenWren 26+) |
-| `screenwren` | **Deprecated.** Last standalone build (0.5.0); ScreenWren now ships inside Mac Tools | macOS 26+ |
 | [`latent`](https://github.com/diamondplated/mac-apps/tree/main/Latent) | Folder-first photo viewer with a local AI enhancement pipeline | macOS 14+, Apple silicon |
 | [`sift`](https://github.com/diamondplated/mac-apps/tree/main/Sift) | Drop a data file in, explore it instantly — DuckDB reads it in place | macOS 14+, Apple silicon |
 
@@ -21,7 +20,8 @@ brew install --cask diamondplated/tap/latent
 brew install --cask diamondplated/tap/sift
 ```
 
-Already on the old `screenwren` cask? Switch over; Mac Tools installs the current ScreenWren:
+The standalone `screenwren` cask was removed on 2026-11-12: its last build (0.5.0) is out of date and
+ScreenWren now ships inside Mac Tools. If you still have it installed, switch over:
 
 ```sh
 brew uninstall --cask screenwren && brew install --cask diamondplated/tap/mac-tools
